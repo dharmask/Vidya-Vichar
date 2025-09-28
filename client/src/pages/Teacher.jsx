@@ -13,20 +13,8 @@ function QItem({ q, onChange, onDelete }){
           {q.important ? 'Important' : (q.status==='answered' ? 'Answered' : 'Open')}
         </span>
       </div>
-
       <div style={{whiteSpace:'pre-wrap'}}>{q.text}</div>
 
-      {/* Show existing reply (if any) */}
-      {q.answer && (
-        <div className="answer" style={{marginTop:8}}>
-          <div className="badge">
-            Answered by {q.answeredBy?.role || 'User'}: {q.answeredBy?.name || 'Unknown'} ({q.answeredBy?.email || 'N/A'})
-          </div>
-          <div className="note-text">{q.answer}</div>
-        </div>
-      )}
-
-      {/* Action buttons */}
       <div className="row" style={{marginTop:8}}>
         <button className="btn" onClick={()=>onChange(q._id, { important: !q.important })}>
           {q.important ? 'Unmark important' : 'Mark important'}
@@ -35,15 +23,8 @@ function QItem({ q, onChange, onDelete }){
         <button className="btn" onClick={()=>onDelete(q._id)}>Delete</button>
       </div>
 
-      {/* Reply input */}
       <div style={{marginTop:8}}>
-        <textarea
-          className="input"
-          rows="2"
-          value={answer}
-          onChange={e=>setAnswer(e.target.value)}
-          placeholder="Type a reply..."
-        />
+        <textarea className="input" rows="2" value={answer} onChange={e=>setAnswer(e.target.value)} placeholder="Type a reply..." />
         <div style={{display:'flex', justifyContent:'flex-end', marginTop:6}}>
           <button className="btn success" onClick={()=>onChange(q._id, { answer })}>Reply</button>
         </div>
@@ -51,7 +32,6 @@ function QItem({ q, onChange, onDelete }){
     </div>
   );
 }
-
 
 function Board({ lectureId, onlyUnanswered, onlyImportant }){
   const [qs, setQs] = useState([]);
@@ -182,34 +162,67 @@ export default function Teacher(){
           <ul>
             {classes.map(c => (
               <li key={c._id} style={{marginBottom:8}}>
-                <button className={`btn selectable ${currentClass === c._id ? 'selected' : ''}`}
-                 onClick={()=>selectClass(c._id)}>{c.subject} <span className="badge">code: {c.code}</span></button>
+                <button className="btn" onClick={()=>selectClass(c._id)}>{c.subject} <span className="badge">code: {c.code}</span></button>
               </li>
             ))}
           </ul>
 
-          {currentClass && classInfo && (
-            <div className="card" style={{marginTop:12}}>
-              <h4>Manage Class</h4>
-              <div className="row">
-                <input className="input" placeholder="Add TA by email (must be role=ta)" value={taEmail} onChange={e=>setTaEmail(e.target.value)} />
-                <button className="btn" onClick={addTA}>Add TA</button>
-              </div>
-              <div style={{marginTop:12}}>
-                <h4>Students</h4>
-                {classInfo.students?.length ? (
-                  <ul>
-                    {classInfo.students.map(s => (
-                      <li key={s._id} style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
-                        <span>{s.name} <span className="badge">{s.email}</span></span>
-                        <button className="btn" onClick={()=>removeStudent(s._id)}>Remove</button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : <div className="badge">No students yet</div>}
-              </div>
-            </div>
-          )}
+{currentClass && classInfo && (
+  <div className="card" style={{marginTop:12}}>
+    <h4>Manage Class</h4>
+    <div className="row">
+      <input
+        className="input"
+        placeholder="Add TA by email (must be role=ta)"
+        value={taEmail}
+        onChange={e=>setTaEmail(e.target.value)}
+      />
+      <button className="btn" onClick={addTA}>Add TA</button>
+    </div>
+
+    {/* --- NEW: TA List --- */}
+    <div style={{marginTop:12}}>
+      <h4>Teaching Assistants</h4>
+      {classInfo.tas?.length ? (
+        <ul>
+          {classInfo.tas.map(ta => (
+            <li key={ta._id} style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
+              <span>{ta.name} <span className="badge">{ta.email}</span></span>
+              <button
+                className="btn"
+                onClick={async () => {
+                  await apiFetch(`/api/classes/${currentClass}/remove-ta`, {
+                    method:'POST',
+                    body: JSON.stringify({ taId: ta._id })
+                  });
+                  setClassInfo(await apiFetch(`/api/classes/${currentClass}`));
+                }}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : <div className="badge">No TAs yet</div>}
+    </div>
+
+    {/* --- Students List --- */}
+    <div style={{marginTop:12}}>
+      <h4>Students</h4>
+      {classInfo.students?.length ? (
+        <ul>
+          {classInfo.students.map(s => (
+            <li key={s._id} style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
+              <span>{s.name} <span className="badge">{s.email}</span></span>
+              <button className="btn" onClick={()=>removeStudent(s._id)}>Remove</button>
+            </li>
+          ))}
+        </ul>
+      ) : <div className="badge">No students yet</div>}
+    </div>
+  </div>
+)}
+
         </div>
         <div className="col">
           <h4>Lectures</h4>
@@ -222,7 +235,7 @@ export default function Teacher(){
           <ul style={{marginTop:8}}>
             {lectures.map(l => (
               <li key={l._id} style={{marginBottom:8}}>
-                <button className={`btn selectable ${currentLecture === l._id ? 'selected' : ''}`} onClick={()=>selectLecture(l._id)}>{l.title}</button>
+                <button className="btn" onClick={()=>selectLecture(l._id)}>{l.title}</button>
               </li>
             ))}
           </ul>
