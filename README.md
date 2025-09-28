@@ -1,5 +1,8 @@
 # VidyaVichar – MERN Sticky Q&A Board (Live updates via SSE)
 
+github repo link- https://github.com/incredibleharsh021/Vidya-Vichar.git
+
+
 A real‑time classroom Q&A “sticky note” board for lectures. Students post questions; Teachers (and TAs) triage, reply, mark important, and close them. Live updates are pushed over **Server‑Sent Events (SSE)** so everyone sees changes instantly.
 
 ---
