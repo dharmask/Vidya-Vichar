@@ -162,7 +162,7 @@ export default function Teacher(){
           <ul>
             {classes.map(c => (
               <li key={c._id} style={{marginBottom:8}}>
-                <button className="btn" onClick={()=>selectClass(c._id)}>{c.subject} <span className="badge">code: {c.code}</span></button>
+                <button className={`btn selectable ${currentClass === c._id ? 'selected' : ''}`} onClick={()=>selectClass(c._id)}>{c.subject} <span className="badge">code: {c.code}</span></button>
               </li>
             ))}
           </ul>
@@ -235,7 +235,7 @@ export default function Teacher(){
           <ul style={{marginTop:8}}>
             {lectures.map(l => (
               <li key={l._id} style={{marginBottom:8}}>
-                <button className="btn" onClick={()=>selectLecture(l._id)}>{l.title}</button>
+                <button className={`btn selectable ${currentLecture === l._id ? 'selected' : ''}`} onClick={()=>selectLecture(l._id)}>{l.title}</button>
               </li>
             ))}
           </ul>
