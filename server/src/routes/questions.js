@@ -40,7 +40,7 @@ router.patch('/:id', authRequired, async (req, res) => {
     }
 
     if (typeof important === 'boolean') q.important = important;
-
+   
     if (typeof answer === 'string') {
       q.answer = answer;
       q.answeredBy = req.user.id;
@@ -53,8 +53,12 @@ router.patch('/:id', authRequired, async (req, res) => {
 
     await q.save();
 
+    const populatedQ = await Question.findById(q._id)
+  .populate('author', 'name email role')
+  .populate('answeredBy', 'name email role');
+
     publish(q.lectureId, { type: 'update', id: q._id });
-    return res.json(q);
+    return res.json(populatedQ);
   } catch (e) {
     console.error('[patch question]', e);
     return res.status(500).json({ error: 'Server error' });
