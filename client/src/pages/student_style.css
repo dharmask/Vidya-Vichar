@@ -1,0 +1,62 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start; /* don't stretch children */
+  margin-top: 16px; /* 👈 adds space above notes */
+}
+
+.note {
+  width: 100%;
+  background: #fff8b3;
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+  /* let height expand with content */
+  height: auto; 
+  min-height: unset; 
+  max-height: none;
+
+  /* wrapping */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  display: block; /* so it grows vertically */
+}
+
+.note .meta {
+  margin-bottom: 8px;
+}
+
+/* ✅ Reply section */
+.answer {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f5f5f5;   /* light gray */
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.answer .badge {
+  display: inline-block;
+  margin-bottom: 6px;
+  background: #ddd;
+  color: #333;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+/* Base selectable buttons */
+.btn.selectable {
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+/* Highlighted state */
+.btn.selectable.selected {
+  background: #007bff;   /* blue highlight */
+  color: white;
+  border-color: #0056b3;
+  font-weight: bold;
+}
