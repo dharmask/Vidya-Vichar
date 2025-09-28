@@ -167,28 +167,62 @@ export default function Teacher(){
             ))}
           </ul>
 
-          {currentClass && classInfo && (
-            <div className="card" style={{marginTop:12}}>
-              <h4>Manage Class</h4>
-              <div className="row">
-                <input className="input" placeholder="Add TA by email (must be role=ta)" value={taEmail} onChange={e=>setTaEmail(e.target.value)} />
-                <button className="btn" onClick={addTA}>Add TA</button>
-              </div>
-              <div style={{marginTop:12}}>
-                <h4>Students</h4>
-                {classInfo.students?.length ? (
-                  <ul>
-                    {classInfo.students.map(s => (
-                      <li key={s._id} style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
-                        <span>{s.name} <span className="badge">{s.email}</span></span>
-                        <button className="btn" onClick={()=>removeStudent(s._id)}>Remove</button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : <div className="badge">No students yet</div>}
-              </div>
-            </div>
-          )}
+{currentClass && classInfo && (
+  <div className="card" style={{marginTop:12}}>
+    <h4>Manage Class</h4>
+    <div className="row">
+      <input
+        className="input"
+        placeholder="Add TA by email (must be role=ta)"
+        value={taEmail}
+        onChange={e=>setTaEmail(e.target.value)}
+      />
+      <button className="btn" onClick={addTA}>Add TA</button>
+    </div>
+
+    {/* --- NEW: TA List --- */}
+    <div style={{marginTop:12}}>
+      <h4>Teaching Assistants</h4>
+      {classInfo.tas?.length ? (
+        <ul>
+          {classInfo.tas.map(ta => (
+            <li key={ta._id} style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
+              <span>{ta.name} <span className="badge">{ta.email}</span></span>
+              <button
+                className="btn"
+                onClick={async () => {
+                  await apiFetch(`/api/classes/${currentClass}/remove-ta`, {
+                    method:'POST',
+                    body: JSON.stringify({ taId: ta._id })
+                  });
+                  setClassInfo(await apiFetch(`/api/classes/${currentClass}`));
+                }}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : <div className="badge">No TAs yet</div>}
+    </div>
+
+    {/* --- Students List --- */}
+    <div style={{marginTop:12}}>
+      <h4>Students</h4>
+      {classInfo.students?.length ? (
+        <ul>
+          {classInfo.students.map(s => (
+            <li key={s._id} style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
+              <span>{s.name} <span className="badge">{s.email}</span></span>
+              <button className="btn" onClick={()=>removeStudent(s._id)}>Remove</button>
+            </li>
+          ))}
+        </ul>
+      ) : <div className="badge">No students yet</div>}
+    </div>
+  </div>
+)}
+
         </div>
         <div className="col">
           <h4>Lectures</h4>

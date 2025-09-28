@@ -1,4 +1,3 @@
-
 import express from 'express';
 import Lecture from '../models/Lecture.js';
 import Class from '../models/Class.js';
@@ -46,17 +45,23 @@ router.get('/:id/questions', authRequired, async (req, res) => {
     const { id } = req.params;
     const lec = await Lecture.findById(id);
     if (!lec) return res.status(404).json({ error: 'Lecture not found' });
+
     const cls = await Class.findById(lec.classId);
     if (!cls) return res.status(404).json({ error: 'Class not found' });
+
     const uid = req.user.id;
-    const allowed = String(cls.owner) === uid || cls.tas.some(x => String(x) === uid) || cls.students.some(x => String(x) === uid);
+    const allowed =
+      String(cls.owner) === uid ||
+      cls.tas.some(x => String(x) === uid) ||
+      cls.students.some(x => String(x) === uid);
     if (!allowed) return res.status(403).json({ error: 'Not a member of class' });
 
     const qs = await Question.find({ lectureId: id, status: { $ne: 'deleted' } })
       .sort({ important: -1, createdAt: 1 })
-      .populate('author', 'name role')
-      .populate('answeredBy', 'name role')
+      .populate('author', 'name email role')
+      .populate('answeredBy', 'name email role')
       .lean();
+
     res.json(qs);
   } catch (e) {
     console.error('[list questions]', e);
