@@ -1,0 +1,188 @@
+
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #1b1f23;
+  --muted: #59636e;
+  --accent: #6366f1;
+  --accent-2: #22c55e;
+  --note-yellow: #fff4b3;
+  --note-pink: #ffd6e7;
+  --note-blue: #d7f0ff;
+  --note-green: #d9ffd6;
+  --border: #e4e8ee;
+}
+
+body.dark {
+  --bg: #0b1220;
+  --card: #0f172a;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #8b5cf6;
+  --accent-2: #10b981;
+  --note-yellow: #3d3200;
+  --note-pink: #3c1222;
+  --note-blue: #0e2433;
+  --note-green: #0f2d10;
+  --border: #1f2937;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+header.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn.primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: white;
+}
+.btn.success {
+  background: var(--accent-2);
+  color: #04210f;
+  border-color: transparent;
+}
+.btn.ghost { background: transparent; }
+
+.input, select, .select, .code, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+}
+.input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(99,102,241,.15); }
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.col { flex: 1 1 280px; }
+
+/* Sliding role switcher */
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 6px;
+}
+.segmented input { display: none; }
+.segmented label {
+  text-align: center;
+  padding: 10px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.segmented .slider {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  width: calc((100% - 12px) / 3);
+  background: var(--accent);
+  border-radius: 12px;
+  transition: transform .25s ease;
+  z-index: 0;
+}
+.segmented .item { position: relative; z-index: 1; }
+#role-student:checked ~ .slider { transform: translateX(0%); }
+#role-ta:checked ~ .slider { transform: translateX(100%); }
+#role-teacher:checked ~ .slider { transform: translateX(200%); }
+.segmented input:checked + label { color: white; }
+
+/* Dark mode toggle */
+.toggler {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+/* Sticky notes board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.note {
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px dashed var(--border);
+  min-height: 150px;
+  transform: rotate(calc(var(--r, 0) * 1deg));
+}
+.note.yellow { background: var(--note-yellow); }
+.note.pink { background: var(--note-pink); }
+.note.blue { background: var(--note-blue); }
+.note.green { background: var(--note-green); }
+
+.note .meta {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
+}
+.badge.imp { background: #ffe38a; color: #4a3a00; }
+.badge.ans { background: #bbf7d0; color: #064e3b; }
+.badge.open { background: #e5e7eb; color: #111827; }
+
